@@ -49,8 +49,8 @@ test' xs ys =
 
 
 -- SE NEDAN!
-test'' :: [String] -> [(String, String)] -> [(String, [(String, String)])]
-test'' xs ys = 
+createGraph :: [String] -> [(String, String)] -> [(String, [(String, String)])]
+createGraph xs ys = 
         mapMaybe (\a -> 
                         let matches = [b | b <- ys, fst b == a, checkPath (fst b) (snd b) == True]
                         in if null matches 
