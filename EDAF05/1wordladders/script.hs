@@ -1,6 +1,9 @@
 import Text.Read (readMaybe)
+import qualified Data.Set as Set
+import qualified Data.Sequence as Seq
 import Data.Maybe
 import Control.Concurrent.STM (check)
+import qualified Data.Binary.Builder as Seq
 
 
 main :: IO ()
@@ -48,4 +51,25 @@ takeFirst5 = take 5
 checkPath :: [Char] -> [Char] -> Bool
 checkPath a b = all (`elem` takeFirst5 b) (takeLast4 a)
  
+bfs :: [(String, [String])] -> (String,String) -> Int
+bfs graph st = 
+    let
+        visited = Set.empty
+        q = [fst st]
+        path = []
+    in 
+        if length q != 0 
+            then
+                let v = take 1 q
+                    q' = drop 1 q 
+                    in if !elem v visited 
+                        then
+                            let
+                                visited' = Set.insert take 1 q visited
+                                path' = path : v
+                            in
+
+                    else
+                in 
+
 
