@@ -3,59 +3,6 @@
 import Data.List (all)
 import Data.Maybe
 
-fun :: Num a => a -> a -> a
-fun x y = x + y
-
-
---checkWordLength :: [Char] -> Bool
---checkWordLength word = if length word == 5 then checkPath word else False
-
-
-
---all :: (a -> Bool) -> [a] -> Bool Tar en predikatfunktion 
--- och en lista, och returnerar True om predikatet är sant för alla element i listan, annars False.
--- elem :: Eq a => a -> [a] -> Bool Tar ett element och en lista, och returnerar True om elementet finns i listan, annars False.
--- Eq är en typklass i Haskell som definierar en ekvivalensrelation mellan värden av en viss typ. Det innebär att typer som är instanser av Eq kan jämföras för likhet med hjälp av operatorn (==) och (/=).
-
---selectedChars :: String
---selectedChars = [ String !! i | i <- [1,2,3,4] ]
-
-removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']]
-
-a = [x*y | x <- [1,2,3], y <- [4,5,6]]
-xxs = [[1,3,5,2,3,1,2,4,5],[1,2,3,4,5,6,7,8,9],[1,2,4,2,1,6,3,1,3,2,3,6]] 
-b :: [[Integer]] -> [[Integer]]
-b' :: [[Integer]] -> [[Integer]]
-b xxs = [ [ x | x <- xs, even x ] | xs <- xxs]
-b' xxs = map (filter even) xxs
-
-word = ["jagar","gajar", "hejar", "kulig", "ahaaa"]
-path = [("jagar", "gajar"),("graaj","jagar"), ("jagar", "kulig"), ("kulig", "gulli"), ("jagar", "hagar"), ("jagar","ragga")]
-
-test :: [String] -> [(String, String)] -> ([String], [(String, String)])
-test a b = (a,b)
-
-
-test' :: [String] -> [(String, String)] -> [(String, [(String, String)])]
-test' xs ys = 
-        mapMaybe (\a -> 
-                        let matches = [b | b <- ys, fst b == a]
-                        in if null matches 
-                            then Nothing
-                            else Just (a, matches)
-                        )xs
-
--- målet är en lista av tuples. Maybe [(String, [(String, String)])]
-
-createGraph' :: [String] -> [(String, String)] -> [(String, [(String, String)])]
-createGraph' xs ys = 
-        mapMaybe (\a -> 
-                        let matches = [b | b <- ys, fst b == a, checkPath (fst b) (snd b) == True]
-                        in if null matches 
-                            then Nothing
-                            else Just (a, matches)
-                        )xs
-
 ---------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------
 printHello :: IO()
@@ -64,12 +11,13 @@ printHello = print "Hello"
 -- putStrLn :: String -> IO() 
 -- getLine IO String (slutar efter ny rad)
 -- För att läsa in flera rader se följande
-echo :: IO()
-echo = do line <- getLine
-          print line
+main :: IO()
+main = do
+    input <- getContents
+    print (input)
 
-createGraph :: [String] -> [(String, String)] -> [(String, [String])]
-createGraph xs ys = 
+createGraph'' :: [String] -> [(String, String)] -> [(String, [String])]
+createGraph'' xs ys = 
         mapMaybe (\a -> 
                         let matches = [snd b | b <- ys, fst b == a, checkPath (fst b) (snd b) == True]
                         in if null matches 
@@ -83,15 +31,15 @@ createGraph xs ys =
                         )xs
 
         
-createGraph'' :: [String] -> [(String, String)] -> [(String, [String])]
-createGraph'' xs ys = 
-        mapMaybe (\a -> 
-                        let forward = [snd b | b <- ys, fst b == a, checkPath (fst b) (snd b) == True]
-                            backward = [fst b | b <- ys, snd b == a, checkPath (snd b) (fst b) == True]
+createGraph :: [String] -> [(String, String)] -> [(String, [String])]
+createGraph xs ys = 
+        mapMaybe (\x -> 
+                        let forward = [snd y | y <- ys, fst y == x, checkPath (fst y) (snd y) == True]
+                            backward = [fst y | y <- ys, snd y == x, checkPath (snd y) (fst y) == True]
                             neighbors = forward ++ backward
                         in if null neighbors
                             then Nothing 
-                            else Just(a, neighbors)
+                            else Just(x, neighbors)
                         )xs
 
 
