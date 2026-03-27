@@ -5,6 +5,14 @@ import Data.Maybe
 import Data.Char (isDigit)
 import Text.Read (readMaybe)
 
+increment :: Int -> Int
+increment x = x + 1
+
+main :: IO ()
+main = do
+    let a = 5
+    let a' = increment a
+    print a'   -- 6
 ---------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------
 printHello :: IO()
@@ -19,9 +27,9 @@ main = do
     let ls = lines input                 -- dela upp input i rader
         numbers = parseNumbers (head ls) -- första raden → tal
         restLines = tail ls
-        words = parseWords restLines (numbers !! 0)
-        paths = parsePaths restLines (numbers !! 0)
- 
+        words = parseWords (numbers !! 0) restLines
+        paths = parsePaths (numbers !! 0) restLines
+
     print numbers
     print words
     print paths
