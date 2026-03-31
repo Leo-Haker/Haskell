@@ -7,7 +7,13 @@ import Data.Maybe
 import Control.Concurrent.STM (check)
 import qualified Data.Binary.Builder as Seq
 import Distribution.Compat.CharParsing (CharParsing(string))
+import Data.Foldable (for_)
 
+type Visited = Set.Set String
+type Queue = Seq.Seq String
+type Path = [String]
+type State = (Visited, Queue, Path)
+type Graph = Map.Map String [String]
 
 main :: IO ()
 main = do
@@ -17,14 +23,15 @@ main = do
         restLines = tail ls
         words = parseWords restLines (head numbers)
         paths = parsePaths restLines (head numbers)
-        graph = createGraph2 words
+        graph = createGraph words
+        results = fmap (pathToInt . bfs graph) paths
+
 
         --  
     print numbers
     print words
     print paths
 
--- Konverterar en sträng med mellanslag till [Int], ignorerar icke-tal
 parseNumbers :: String -> [Int]
 parseNumbers s = [n | w <- words s, Just n <- [readMaybe w :: Maybe Int]]
 
@@ -36,17 +43,6 @@ parsePaths xs y =
 parseWords :: [String] -> Int -> [String]
 parseWords xs y = take y xs
 
-createGraph :: [String] -> [(String, String)] -> [(String, [String])]
-createGraph xs ys =
-        mapMaybe (\x ->
-                        let forward = [snd y | y <- ys, fst y == x, uncurry checkPath y]
-                            backward = [fst y | y <- ys, snd y == x, uncurry checkPath y]
-                            neighbors = forward ++ backward
-                        in if null neighbors
-                            then Nothing
-                            else Just (x, neighbors)
-                        ) xs
-
 takeLast4 :: String -> String
 takeLast4 s = drop (length s - min 4 (length s)) s
 
@@ -57,45 +53,8 @@ checkPath :: [Char] -> [Char] -> Bool
 checkPath a b = all (`elem` takeFirst5 b) (takeLast4 a)
 
 
-{- TODO: Implementera BFS för att hitta kortaste vägen mellan start och mål i grafen. 
-         Använd en kö (queue) för att hålla reda på vilka noder som ska besökas härnäst, och en mängd (set) för att hålla reda på vilka noder som redan har besökts. 
-         När du når målet, returnera längden på den kortaste vägen.
-   
-   Funktionell while loop i Haskell 
-   loop state =
-    if done
-        then state
-        else
-            let state' = update state
-            in loop state' 
-
-    foldl f startvärde lista
-    f = funktion som uppdaterar ett värde
-    startvärde = initialt state
-    lista = elementen du går igenom
-
-    foldl (+) 0 [1,2,3,4] == ((((0 `f` 1) `f` 2) `f` 3) `f` 4)
-
-    Mål:
-    foldl processNeighbor state neighbors
-
--}
-
---TEST
-type Visited = Set.Set String
-type Queue = Seq.Seq String
-type Path = [String]
-type State = (Visited, Queue, Path)
-type Graph = Map.Map String [String]
-
-getPathLength :: State -> Int
-getPathLength (_, _, path) = length path
-
---FUNKAR
--- >>> createGraph2 ["abcde", "bcdef", "cdefg", "defgh", "efghi"]
--- fromList [("abcde",["bcdef"]),("bcdef",["cdefg"]),("cdefg",["defgh"]),("defgh",["efghi"])]
-createGraph2 :: [String] -> Graph
-createGraph2 xs =
+createGraph :: [String] -> Graph
+createGraph xs =
         let graphList = mapMaybe (\x ->
                         let neighbors = [y |  y <- xs, y /= x, checkPath x y ]
                         in if null neighbors
@@ -124,24 +83,25 @@ addToQueue (queue, visited)
                 (q Seq.|> n, Set.insert n v))
       (queue, visited)
 
-graph = createGraph2 ["abcde", "bcdef", "cdefg", "defhg", "efghi"]
-paths = [("abcde", "efghi"),("abcde", "cdefg"), ("abcde", "abcde")]
+graph = createGraph ["abcde", "bcdef", "cdefg", "defhg", "efghi"]
+paths = [("abcde", "efghi"),("abcde", "cdefg"), ("abcde", "kkkkk")]
 path2 = ("abcde", "efghi")
 
-results = fmap(pathToInt . bfs graph) paths
+results = fmap (pathToInt . bfs graph) paths
 
 
+showResult :: [Int] -> IO ()
+showResult res = for_ res $ \x -> putStrLn (if x < 0 then "Impossible" else show x)
 
+test :: IO() 
+test = do showResult results
 
--- >>> results
--- [4,2,0]
+-- >>>for_ results $ \x -> putStrLn (if x < 0 then "Impossible" else show x)
 
--- [5,3,0]
 -- 
 -- 
 pathToInt :: Path -> Int
 pathToInt x = length x - 1
-
 
 bfs :: Graph -> (String, String) -> Path
 bfs graph (start, goal) =
@@ -158,11 +118,10 @@ bfs graph (start, goal) =
         st :: State
         st = (v,q,p)
     in
-        bfsRest st graph goal
+        bfsHelper st graph goal
 
-
-bfsRest :: State -> Graph -> String -> Path
-bfsRest (visited, queue, path) graph goal =
+bfsHelper :: State -> Graph -> String -> Path
+bfsHelper (visited, queue, path) graph goal =
     if null queue
         then []
     else
@@ -179,7 +138,7 @@ bfsRest (visited, queue, path) graph goal =
                     n = neighbors graph node
                     (q', v) = addToQueue (q, visited) n
                 in
-                    bfsRest (v,q',p) graph goal
+                    bfsHelper (v,q',p) graph goal
 
 
 
