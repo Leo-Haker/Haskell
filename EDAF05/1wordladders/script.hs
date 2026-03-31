@@ -1,11 +1,11 @@
-import Text.Read (readMaybe)
+import Text.Read (readMaybe, Lexeme (String))
 import qualified Data.Set as Set
 import Data.Sequence (Seq, (|>), (<|))
 import qualified Data.Sequence as Seq
 import qualified Data.Map as Map
 import Data.Maybe
 import Control.Concurrent.STM (check)
-import qualified Data.Binary.Builder as Seq
+
 import Distribution.Compat.CharParsing (CharParsing(string))
 import Data.Foldable (for_)
 import Text.Printf (FieldFormat(fmtChar))
@@ -16,6 +16,17 @@ type Queue = Seq.Seq String
 type Path = [String]
 type State = (Visited, Queue, Path)
 type Graph = Map.Map String [String]
+type QueueTest = Seq (String, Int)
+
+
+--    TESTER   --
+-- >>> checkPath "aaaaa" "aaaba"
+-- True
+-- >>> checkPath "aaaaa" "aaabb"
+-- False
+-- >>> checkPath "abcde" "abfge"
+-- False
+
 
 main :: IO ()
 main = do
@@ -26,7 +37,8 @@ main = do
         words = parseWords restLines (head numbers)
         paths = parsePaths restLines (head numbers)
         graph = createGraph words
-    showResult (fmap (pathToInt . bfs graph) paths)
+    -- showResult (fmap (pathToInt . bfs graph) paths)
+    for_ paths $ \p -> putStrLn $ bfsTest graph p
 
 parseNumbers :: String -> [Int]
 parseNumbers s = [n | w <- words s, Just n <- [readMaybe w :: Maybe Int]]
@@ -39,37 +51,16 @@ parsePaths xs y =
 parseWords :: [String] -> Int -> [String]
 parseWords xs y = take y xs
 
-takeLast4 :: String -> String
-takeLast4 s = drop (length s - min 4 (length s)) s
 
-takeFirst5 :: String -> String
-takeFirst5 = take 5
-
-
--- >>> checkPath "aaaaa" "aaaba"
--- True
--- >>> checkPath "aaaaa" "aaabb"
--- False
--- >>> checkPath "abcde" "abfge"
--- False
 
 -- "\\" (listdifferens): Denna operator går igenom den vänstra listan och försöker ta bort motsvarande element från den högra
 -- listan. Om det inte finns något motsvarande element i den högra listan så behålls elementet i den vänstra listan.
 checkPath :: String -> String -> Bool
-checkPath s1 s2 = 
-                let last4 = drop 1 s1
-                in null (last4 \\ s2)
+checkPath s1 s2 = null (drop 1 s1 \\ s2)
 
 
 createGraph :: [String] -> Graph
-createGraph xs =
-        let graphList = mapMaybe (\x ->
-                        let neighbors = [y |  y <- xs, y /= x, checkPath x y ]
-                        in if null neighbors
-                            then Nothing
-                            else Just (x, neighbors)
-                        ) xs
-        in Map.fromList graphList
+createGraph xs = Map.fromList [(x, [y | y <- xs, y /= x, checkPath x y]) | x <- xs]
 
 
 popSeq :: Seq a -> Maybe (a, Seq a)
@@ -144,8 +135,30 @@ bfsHelper (visited, queue, path) graph goal =
                 in
                     bfsHelper (v,q',p) graph goal
 
+bfsTest :: Graph -> (String, String) -> String
+bfsTest graph (start, goal) 
+    | start == goal = "0"
+    | otherwise = bfsHelperTest (Set.singleton start) (Seq.singleton (start, 0))
+    where
+        bfsHelperTest :: Visited -> QueueTest -> String
+        bfsHelperTest visited queue = 
+            case Seq.viewl queue of
+                Seq.EmptyL -> "Impossible"
+                (node, dist) Seq.:< q ->
+                    if node == goal
+                        then show dist
+                        else
+                            let neighbors = Map.findWithDefault [] node graph
+                                newNodes = filter (\n -> not (Set.member n visited)) neighbors  
+                                newVisited = foldr Set.insert visited newNodes
+                                nextQueueItems = fmap (, dist + 1) (Seq.fromList newNodes)  -- Här ser vi till att path är given för varje nod. Lager 1, lager 2 osv. 
+                                newQueue = q Seq.>< nextQueueItems
+                            in bfsHelperTest newVisited newQueue
 
 
 
 
 
+{- 
+Fixat checkPath, createGraph, bfsTest och bfsHelperTest.
+-}
