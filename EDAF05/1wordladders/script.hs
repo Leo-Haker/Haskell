@@ -6,6 +6,7 @@ import qualified Data.Map as Map
 import Data.Maybe
 import Control.Concurrent.STM (check)
 import qualified Data.Binary.Builder as Seq
+import Distribution.Compat.CharParsing (CharParsing(string))
 
 
 main :: IO ()
@@ -28,23 +29,23 @@ parseNumbers :: String -> [Int]
 parseNumbers s = [n | w <- words s, Just n <- [readMaybe w :: Maybe Int]]
 
 parsePaths :: [String] -> Int -> [(String, String)]
-parsePaths xs y = 
+parsePaths xs y =
     let brute = drop y xs
-    in  [(n,m) | w <- brute, (n,m) <- [(head(words w), words w !! 1)]]
+    in  [(n,m) | w <- brute, (n,m) <- [(head (words w), words w !! 1)]]
 
 parseWords :: [String] -> Int -> [String]
 parseWords xs y = take y xs
 
 createGraph :: [String] -> [(String, String)] -> [(String, [String])]
-createGraph xs ys = 
-        mapMaybe (\x -> 
+createGraph xs ys =
+        mapMaybe (\x ->
                         let forward = [snd y | y <- ys, fst y == x, uncurry checkPath y]
                             backward = [fst y | y <- ys, snd y == x, uncurry checkPath y]
                             neighbors = forward ++ backward
                         in if null neighbors
-                            then Nothing 
-                            else Just(x, neighbors)
-                        )xs
+                            then Nothing
+                            else Just (x, neighbors)
+                        ) xs
 
 takeLast4 :: String -> String
 takeLast4 s = drop (length s - min 4 (length s)) s
@@ -94,13 +95,13 @@ getPathLength (_, _, path) = length path
 -- >>> createGraph2 ["abcde", "bcdef", "cdefg", "defgh", "efghi"]
 -- fromList [("abcde",["bcdef"]),("bcdef",["cdefg"]),("cdefg",["defgh"]),("defgh",["efghi"])]
 createGraph2 :: [String] -> Graph
-createGraph2 xs = 
-        let graphList = mapMaybe (\x -> 
+createGraph2 xs =
+        let graphList = mapMaybe (\x ->
                         let neighbors = [y |  y <- xs, y /= x, checkPath x y ]
                         in if null neighbors
-                            then Nothing 
-                            else Just(x, neighbors)
-                        )xs
+                            then Nothing
+                            else Just (x, neighbors)
+                        ) xs
         in Map.fromList graphList
 
 
@@ -114,36 +115,72 @@ neighbors :: Graph -> String -> [String]
 neighbors graph node = Map.findWithDefault [] node graph
 
 addToQueue :: (Queue, Visited) -> [String] -> (Queue, Visited)
-addToQueue (queue, visited) neighbors = foldl (\(q, v) n -> if Set.member n visited then (q, v) else (q Seq.|> n, Set.insert n v)) (queue, visited) neighbors
+addToQueue (queue, visited)
+  = foldl
+      (\ (q, v) n
+         -> if Set.member n visited then
+                (q, v)
+            else
+                (q Seq.|> n, Set.insert n v))
+      (queue, visited)
 
-bfs :: State -> Graph -> (String, String) -> State
-bfs (visited, queue, path) graph (start, goal) =
-    if start == goal
-        then (visited, queue, path)
-    else 
-        if Set.member start visited
-            then
+graph = createGraph2 ["abcde", "bcdef", "cdefg", "defhg", "efghi"]
+paths = [("abcde", "efghi"),("abcde", "cdefg"), ("abcde", "abcde")]
+path2 = ("abcde", "efghi")
+
+results = fmap(pathToInt . bfs graph) paths
+
+
+
+
+-- >>> results
+-- [4,2,0]
+
+-- [5,3,0]
+-- 
+-- 
+pathToInt :: Path -> Int
+pathToInt x = length x - 1
+
+
+bfs :: Graph -> (String, String) -> Path
+bfs graph (start, goal) =
+    let
+        q :: Queue
+        q = Seq.Empty |> start
+
+        v :: Visited
+        v = Set.insert start Set.empty
+
+        p :: Path
+        p = []
+
+        st :: State
+        st = (v,q,p)
+    in
+        bfsRest st graph goal
+
+
+bfsRest :: State -> Graph -> String -> Path
+bfsRest (visited, queue, path) graph goal =
+    if null queue
+        then []
+    else
+        let
+            (node, q) = case popSeq queue of
+                Nothing -> ("", Seq.Empty)
+                Just (node, q) -> (node, q)
+            p = node : path
+        in
+            if node == goal
+                then p
+            else
                 let
-                    Just(st, q) = popSeq queue
+                    n = neighbors graph node
+                    (q', v) = addToQueue (q, visited) n
                 in
-                    bfs (visited, q, path) graph (st, goal)
-        else
-            let 
-                v = Set.insert start visited
-                p = path : start
-            in
-                let neighbors = neighbors graph start 
-                    (q, v) = foldl addToQueue (queue, visited) neighbors
-                    Just(st'', q'') =  popSeq q
-                   
-                in 
-                    
-                    
-                    
-                    
+                    bfsRest (v,q',p) graph goal
 
-                
-                    
 
 
 
