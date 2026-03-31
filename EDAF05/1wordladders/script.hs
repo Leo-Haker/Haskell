@@ -1,5 +1,6 @@
 import Text.Read (readMaybe)
 import qualified Data.Set as Set
+import Data.Sequence (Seq, (|>), (<|))
 import qualified Data.Sequence as Seq
 import qualified Data.Map as Map
 import Data.Maybe
@@ -55,29 +56,6 @@ checkPath :: [Char] -> [Char] -> Bool
 checkPath a b = all (`elem` takeFirst5 b) (takeLast4 a)
 
 
-bfs :: [(String, [String])] -> (String,String) -> Int
-bfs graph st = 
-    let
-        visited = Set.empty
-        q = [fst st]
-        path = []
-    in 
-        if length q != 0 
-            then
-                let v = take 1 q
-                    q' = drop 1 q 
-                    in if !elem v visited 
-                        then
-                            let
-                                visited' = Set.insert take 1 q visited
-                                path' = path : v
-                            in
-                                if v == snd st 
-                                    then length path' 
-                                    else bfs graph (visited', q' ++ neighbors, path')
-                        else bfs graph (visited, q', path)  
-                in 
-
 {- TODO: Implementera BFS för att hitta kortaste vägen mellan start och mål i grafen. 
          Använd en kö (queue) för att hålla reda på vilka noder som ska besökas härnäst, och en mängd (set) för att hålla reda på vilka noder som redan har besökts. 
          När du når målet, returnera längden på den kortaste vägen.
@@ -126,10 +104,28 @@ createGraph2 xs =
         in Map.fromList graphList
 
 
-bfs_test :: State -> Graph -> (String, String) -> State
-bfs_test (visited, queue, path) graph (start, goal) =
-    if Seq.null queue 
-        then (visited, queue, path) -- Ingen väg hittades
+popSeq :: Seq a -> Maybe (a, Seq a)
+popSeq q =
+    case Seq.viewl q of
+        Seq.EmptyL   -> Nothing
+        x Seq.:< q'  -> Just (x, q')
+
+
+bfs :: State -> Graph -> (String, String) -> State
+bfs (visited, queue, path) graph (start, goal) =
+    if start == goal
+        then (visited, queue, path)
+    else 
+        if Set.member start visited
+            then
+                let
+                    (st, q) = popSeq queue
+                in
+                    bfs (visited, q, path) graph (st, goal)
         else
-            
- 
+            let 
+                v = Set.insert start visited
+                p = path : start
+            in
+
+
