@@ -8,6 +8,8 @@ import Control.Concurrent.STM (check)
 import qualified Data.Binary.Builder as Seq
 import Distribution.Compat.CharParsing (CharParsing(string))
 import Data.Foldable (for_)
+import Text.Printf (FieldFormat(fmtChar))
+import Data.List((\\))
 
 type Visited = Set.Set String
 type Queue = Seq.Seq String
@@ -43,8 +45,20 @@ takeLast4 s = drop (length s - min 4 (length s)) s
 takeFirst5 :: String -> String
 takeFirst5 = take 5
 
-checkPath :: [Char] -> [Char] -> Bool
-checkPath a b = all (`elem` takeFirst5 b) (takeLast4 a)
+
+-- >>> checkPath "aaaaa" "aaaba"
+-- True
+-- >>> checkPath "aaaaa" "aaabb"
+-- False
+-- >>> checkPath "abcde" "abfge"
+-- False
+
+-- "\\" (listdifferens): Denna operator går igenom den vänstra listan och försöker ta bort motsvarande element från den högra
+-- listan. Om det inte finns något motsvarande element i den högra listan så behålls elementet i den vänstra listan.
+checkPath :: String -> String -> Bool
+checkPath s1 s2 = 
+                let last4 = drop 1 s1
+                in null (last4 \\ s2)
 
 
 createGraph :: [String] -> Graph
