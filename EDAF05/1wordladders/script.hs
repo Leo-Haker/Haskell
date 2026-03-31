@@ -15,7 +15,9 @@ main = do
         restLines = tail ls
         words = parseWords restLines (head numbers)
         paths = parsePaths restLines (head numbers)
-        graph = createGraph words paths
+        graph = createGraph2 words
+
+        --  
     print numbers
     print words
     print paths
@@ -51,7 +53,8 @@ takeFirst5 = take 5
 
 checkPath :: [Char] -> [Char] -> Bool
 checkPath a b = all (`elem` takeFirst5 b) (takeLast4 a)
- 
+
+
 bfs :: [(String, [String])] -> (String,String) -> Int
 bfs graph st = 
     let
@@ -69,10 +72,11 @@ bfs graph st =
                                 visited' = Set.insert take 1 q visited
                                 path' = path : v
                             in
-
-                    else
+                                if v == snd st 
+                                    then length path' 
+                                    else bfs graph (visited', q' ++ neighbors, path')
+                        else bfs graph (visited, q', path)  
                 in 
-
 
 {- TODO: Implementera BFS för att hitta kortaste vägen mellan start och mål i grafen. 
          Använd en kö (queue) för att hålla reda på vilka noder som ska besökas härnäst, och en mängd (set) för att hålla reda på vilka noder som redan har besökts. 
@@ -109,6 +113,8 @@ getPathLength :: State -> Int
 getPathLength (_, _, path) = length path
 
 --FUNKAR
+-- >>> createGraph2 ["abcde", "bcdef", "cdefg", "defgh", "efghi"]
+-- fromList [("abcde",["bcdef"]),("bcdef",["cdefg"]),("cdefg",["defgh"]),("defgh",["efghi"])]
 createGraph2 :: [String] -> Graph
 createGraph2 xs = 
         let graphList = mapMaybe (\x -> 
@@ -126,3 +132,4 @@ bfs_test (visited, queue, path) graph (start, goal) =
         then (visited, queue, path) -- Ingen väg hittades
         else
             
+ 
