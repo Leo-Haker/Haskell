@@ -110,6 +110,11 @@ popSeq q =
         Seq.EmptyL   -> Nothing
         x Seq.:< q'  -> Just (x, q')
 
+neighbors :: Graph -> String -> [String]
+neighbors graph node = Map.findWithDefault [] node graph
+
+addToQueue :: (Queue, Visited) -> [String] -> (Queue, Visited)
+addToQueue (queue, visited) neighbors = foldl (\(q, v) n -> if Set.member n visited then (q, v) else (q Seq.|> n, Set.insert n v)) (queue, visited) neighbors
 
 bfs :: State -> Graph -> (String, String) -> State
 bfs (visited, queue, path) graph (start, goal) =
@@ -119,7 +124,7 @@ bfs (visited, queue, path) graph (start, goal) =
         if Set.member start visited
             then
                 let
-                    (st, q) = popSeq queue
+                    Just(st, q) = popSeq queue
                 in
                     bfs (visited, q, path) graph (st, goal)
         else
@@ -127,5 +132,20 @@ bfs (visited, queue, path) graph (start, goal) =
                 v = Set.insert start visited
                 p = path : start
             in
+                let neighbors = neighbors graph start 
+                    (q, v) = foldl addToQueue (queue, visited) neighbors
+                    Just(st'', q'') =  popSeq q
+                   
+                in 
+                    
+                    
+                    
+                    
+
+                
+                    
+
+
+
 
 
