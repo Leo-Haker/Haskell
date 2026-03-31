@@ -18,19 +18,13 @@ type Graph = Map.Map String [String]
 main :: IO ()
 main = do
     input <- getContents
-    let ls = lines input                 -- dela upp input i rader
-        numbers = parseNumbers (head ls) -- första raden → tal
+    let ls = lines input                 
+        numbers = parseNumbers (head ls)
         restLines = tail ls
         words = parseWords restLines (head numbers)
         paths = parsePaths restLines (head numbers)
         graph = createGraph words
-        results = fmap (pathToInt . bfs graph) paths
-
-
-        --  
-    print numbers
-    print words
-    print paths
+    showResult (fmap (pathToInt . bfs graph) paths)
 
 parseNumbers :: String -> [Int]
 parseNumbers s = [n | w <- words s, Just n <- [readMaybe w :: Maybe Int]]
@@ -96,10 +90,6 @@ showResult res = for_ res $ \x -> putStrLn (if x < 0 then "Impossible" else show
 test :: IO() 
 test = do showResult results
 
--- >>>for_ results $ \x -> putStrLn (if x < 0 then "Impossible" else show x)
-
--- 
--- 
 pathToInt :: Path -> Int
 pathToInt x = length x - 1
 
