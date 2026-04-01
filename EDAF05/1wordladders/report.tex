@@ -7,17 +7,69 @@
 \pagestyle{empty}
 
 \title{Word ladders report}
-\author{Author 1 and Author 2}
+\author{Kalle Skog and Leo Haker}
 
 \begin{document}
   \maketitle
 
   \section{Results}
 
-  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+Running 1.in \\
+Correct (270 ms) \\
 
-  \section{Implementation details}
+Running 1small1.in \\
+Correct (30 ms) \\
 
-  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+Running 2small2.in \\
+Correct (20 ms) \\
 
+Running 3medium1.in \\
+Correct (390 ms) \\
+
+Running 4medium2.in \\
+Correct (30 ms) \\
+
+Running 5large1.in \\
+Correct (265440 ms) \\
+
+Running 6large2.in \\
+Correct (2870 ms) \\
+
+All tests passed.
+
+\todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+
+The script shows that all test cases were correct.  
+For the largest inputs, the running time was -> 5large1.in took 265440 ms, while 6large2.in took 2870ms.
+
+Most of the running time is spent building the graph, not running the BFS. This is because the graph creation compares every word with every other word, which takes a lot of time for large inputs. The BFS itself is relatively fast in comparison.
+
+\section{Implementation details}
+
+\todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+
+We implemented the solution based on the pseudocode from the lecture slides, but adapted it to Haskell.
+
+The graph is stored as a map: \texttt{Map String [String]}
+
+where each word is connected to a list of its neighboring words.
+
+For the BFS, we used:
+\begin{itemize}
+  \item A queue implemented as a \texttt{Sequence} of pairs \texttt{(String, Int)}, where the integer represents the distance (path).
+  \item A \texttt{Set} to store visited nodes, so we do not visit the same word more than once.
+\end{itemize}
+
+During the BFS, we repeatedly:
+\begin{enumerate}
+  \item Take the first element from the queue.
+  \item Check if it is the goal word.
+  \item Otherwise, get its neighbors from the graph.
+  \item Filter out nodes that have already been visited.
+  \item Add the new nodes to the queue and mark them as visited.
+\end{enumerate}
+
+The BFS runs in about \(O(n + m)\), but since we use \texttt{Map} and \texttt{Set}, it is closer to \(O((n + m)\log n)\) since the lookup for the structures is \texttt{logn}.
+
+The graph construction takes \(O(n^2)\), since every word is compared with every other word. This could be the main reason why the program becomes slow for large inputs.
 \end{document}
