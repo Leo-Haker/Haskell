@@ -6,17 +6,33 @@
 # ./check_solution.sh ./a.out
 
 for f in data/**/*.in; do
-    echo $f
+    echo "---------------------------"
+    echo "Testing: $f"
+    
     pre=${f%.in}
     out=$pre.out
     ans=$pre.ans
+    
+    # Använd 'time' för att mäta körningen. 
+    # -p ger ett standardformat (real, user, sys)
+    # Vi kör själva programmet ($*) med input
+    START_TIME=$(date +%s%3N) # Starttid i millisekunder
+    
     $* < $f > $out
+    
+    END_TIME=$(date +%s%3N) # Sluttid i millisekunder
+    ELAPSED=$((END_TIME - START_TIME))
+    
     DIFF=$(diff -w $ans $out)
+    
     if [ "$DIFF" == "" ]
     then 
-        echo Correct!
+        echo "Status: Correct!"
+        echo "Time: ${ELAPSED}ms"
     else
-        echo $f Incorrect!
+        echo "Status: $f Incorrect!"
+        # Visa skillnaden om du vill se vad som blev fel:
+        # diff -u $ans $out
         exit 1
     fi
 done
