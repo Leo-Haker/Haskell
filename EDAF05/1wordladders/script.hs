@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 import Text.Read (readMaybe, Lexeme (String))
 import qualified Data.Set as Set
 import Data.Sequence (Seq, (|>), (<|))
@@ -5,6 +6,7 @@ import qualified Data.Sequence as Seq
 import qualified Data.Map as Map
 import Data.Maybe
 import Control.Concurrent.STM (check)
+
 
 import Distribution.Compat.CharParsing (CharParsing(string))
 import Data.Foldable (for_)
