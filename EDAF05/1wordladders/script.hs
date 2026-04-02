@@ -71,24 +71,7 @@ bfsTest graph (start, goal)
                         else
                             let neighbors = Map.findWithDefault [] node graph
                                 newNodes = filter (\n -> not (Set.member n visited)) neighbors  --if neighbor not in visited
-                                newVisited = foldl' (flip Set.insert) visited newNodes
+                                newVisited = foldr Set.insert visited newNodes 
                                 newQueue = q Seq.>< Seq.fromList (map (, dist + 1) newNodes) -- dist ++1 och motsvarande q ++ nextQueueItems, där nextQueueItems är "Seq.fromList (map (, dist + 1) newNodes"
                             in bfsHelperTest newVisited newQueue
 
-{-
-FÖLJANDE GJORDE ATT VI GICK FÅRN 9 MIN TILL MINDRE ÄN 2 MIN.
-Stoppade i laddaren
-Ändrade inställningar från energisparläge till hög prestanda
-220 sekunder med ghc script.hs
-108 sekunder med ghc -O2 script.hs
-
-KODÄNDRINGAR:
-Kompilatorn kan ha svårt att optimera föjande, vilket skapar en thunk:
-    nextQueueItems = fmap (, dist + 1) (Seq.fromList newNodes) -- dist ++1
-    newQueue = q Seq.>< nextQueueItems -- q ++ nextQueueItems
-
-
-    newVisited = foldr Set.insert visited newNodes 
-    BYTTES UT MOT:
-    foldl' (flip Set.insert) visited newNodes
--}
