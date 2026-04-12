@@ -1,5 +1,17 @@
 
 -- Translation of reference.py -- 
+-- kan köras med ./check_solution.sh runghc reference.hs --
+-- eller bara kompliera först och kör med ./check_solution.sh ./reference
+
+{- 
+read words from input, one word per line
+then use a dictionary to count which word is most frequent
+but sometimes try to remove the word
+ and then print the most frequent word and if there are multiple
+most frequent take the first one in alphabetical order
+-} 
+
+
 import qualified Data.Map as Map
 import System.IO    
 import Data.IORef
@@ -14,7 +26,7 @@ main = do
         (count, word) = maximum (zip (Map.elems hashMap)  (Map.keys hashMap))
         possibleWords = Map.keys $ Map.filterWithKey(\k v -> v == count &&  k < word) hashMap
         word' = if null possibleWords then word else minimum possibleWords
-    print(word, count)
+    putStrLn(word' ++ " " ++ show count)
 
 loop :: IORef Int -> Map.Map String Int-> IO (Map.Map String Int)
 loop counter hashMap = do
