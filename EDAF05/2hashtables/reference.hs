@@ -3,7 +3,6 @@
 import qualified Data.Map as Map
 import System.IO    
 import Data.IORef
-import Text.Read (Lexeme(String))
 
 emptyMap :: Map.Map k a
 emptyMap = Map.empty
