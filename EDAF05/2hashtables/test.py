@@ -103,14 +103,14 @@ class SeparateChaining:
 
         #Increase size of list
         if a > 1:
-            self._resize(self.size * 2)
+            self.resize(self.size * 2)
 
         #Decrease size of list
         elif a < 0.25 and self.size > 1:
-            self._resize(self.size // 2)
+            self.resize(self.size // 2)
         else: return
 
-    def _resize(self, new_size):
+    def resize(self, new_size):
         oldtable = self.hashtable
         self.size = new_size
         self.hashtable = [[] for _ in range(new_size)]
