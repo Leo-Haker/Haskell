@@ -8,6 +8,8 @@ till 5 minuter och 54 sekunder.
 Att lägga till en count för varje element istället 
 för att räkna alla element varje gång alpha() kallas
 gör att vi går från 5 minuter och 54 sekunder till 17 sekunder.
+Göra om Remove så att den inte kallas exit() 
+gör att vi går från 17 sekunder till 12 sekunder.
 """
 
 class Node: 
@@ -37,8 +39,6 @@ class SeparateChaining:
         return False
     
     def remove(self, key: str):
-        if not self.exists(key):
-            return
         h = string_to_hash(key) % self.size
         for elem in self.hashtable[h]:
             if elem.key == key:
