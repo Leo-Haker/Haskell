@@ -39,7 +39,7 @@ class SeparateChaining:
             self.hashtable = [[] for _ in range(self.size)]
             for a in oldtable:
                 for b in a:
-                    self.insert(b)
+                    self.private_insert(b)
         else:
             return
         
