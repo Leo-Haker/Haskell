@@ -10,6 +10,26 @@ för att räkna alla element varje gång alpha() kallas
 gör att vi går från 5 minuter och 54 sekunder till 17 sekunder.
 Göra om Remove så att den inte kallas exit() 
 gör att vi går från 17 sekunder till 12 sekunder.
+
+10.1 Rearrange() tar längst tid. 
+om hashtabellen inte är balanserad, stort alpha, 
+då tar alla sökningar och insättningar längre tid. 
+
+10.2 Använda bit and operation istället för modulus. Alltså 
+ska size vara en potens av 2.  
+Blev långsammare att använda bit and operation istället för modulus.
+
+
+Run 100 done
+testReference.py   avg: 12.238s
+test1Reference.py  avg: 13.090s
+
+Tog bort extra functioner och gör uttryckern direkt,
+ingaa Extract method.
+
+Run 100 done
+testReference.py   avg: 11.748s
+test1Reference.py  avg: 10.697s
 """
 
 class Node: 
@@ -56,7 +76,8 @@ class SeparateChaining:
                 return
         self.hashtable[index].append(Node(key, value))
         self.count += 1
-        self.rearrange()   
+        self.rearrange()
+    
 
 
     def private_insert(self, n: Node) :
@@ -92,3 +113,9 @@ class SeparateChaining:
         for hink in oldtable:
             for elem in hink:
                 self.private_insert(elem)
+
+    def items(self):
+        for bucket in self.hashtable:
+            for node in bucket:
+                yield node.key, node.value
+            
