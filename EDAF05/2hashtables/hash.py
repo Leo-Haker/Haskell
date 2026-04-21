@@ -16,12 +16,12 @@ class SeparateChaining:
         self.size = 1
     
     def insert(self, n: Node): 
-        hash = self.size % n.key
+        hash = string_to_hash(n.key) % self.size
         self.hashtable[hash].append(Node)
         self.rearrange()
 
     def private_insert(self, n: Node) :
-        hash = self.size % n.key
+        hash = string_to_hash(n.key) % self.size
         self.hashtable[hash].append(Node)
 
     def alpha(self): 
@@ -44,9 +44,12 @@ class SeparateChaining:
         
 
 class Node: 
-    def __init__(self, value):
-        self.key = string_to_hash(value)
+    def __init__(self, key, value):
+        self.key = key
         self.value = value
+
+    def compare(self, n:Node): 
+        return self.value - n.value 
         
 
 a = [Node]
