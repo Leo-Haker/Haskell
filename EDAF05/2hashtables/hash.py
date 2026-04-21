@@ -16,8 +16,7 @@ class SeparateChaining:
         self.size = 1
     
     def insert(self, n: Node): 
-        hashKey = string_to_hash(n.key)
-        hash = self.size % hashKey
+        hash = self.size % n.key
         self.hashtable[hash].append(Node)
         self.rearrange()
 
