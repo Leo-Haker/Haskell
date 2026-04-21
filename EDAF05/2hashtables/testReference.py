@@ -1,5 +1,5 @@
 import sys
-from hash import SeparateChaining
+from test import SeparateChaining
 # read words from input, one word per line
 # then use a dictionary to count which word is most frequent
 # but sometimes try to remove the word
@@ -7,8 +7,6 @@ from hash import SeparateChaining
 # most frequent take the first one in alphabetical order
 
 """
-Denna tar TID!
-
 data/sample/1.in
 Correct!
 data/sample/2.in
@@ -28,10 +26,9 @@ Correct!
 data/secret/7huge.in
 Correct!
 
-real    31m8.386s
-user    31m4.675s
-sys     0m0.470s
-
+real    0m17.767s
+user    0m15.210s
+sys     0m0.352s
 """
 
 d = SeparateChaining()

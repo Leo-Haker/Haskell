@@ -1,6 +1,15 @@
 from __future__ import annotations
 import hashlib
 
+"""
+Att byta till hash(s) istället för sha256 gör 
+att det tar 1/6 av tiden. Från 31 minuter och 8 sekunder 
+till 5 minuter och 54 sekunder.
+Att lägga till en count för varje element istället 
+för att räkna alla element varje gång alpha() kallas
+gör att vi går från 5 minuter och 54 sekunder till 17 sekunder.
+"""
+
 class Node: 
     def __init__(self, key, value):
         self.key = key
@@ -11,13 +20,14 @@ class Node:
 
     
 def string_to_hash(s: str) -> int:
-    return int.from_bytes(hashlib.sha256(s.encode('utf-8')).digest(),"big")
+    return hash(s)
 
 
 class SeparateChaining:
     def __init__(self, size: int = 1):
         self.hashtable = [[] for _ in range(size)]
         self.size = size
+        self.count = 0
     
     def exists(self, key: str) -> bool:
         h = string_to_hash(key) % self.size
@@ -33,6 +43,7 @@ class SeparateChaining:
         for elem in self.hashtable[h]:
             if elem.key == key:
                 self.hashtable[h].remove(elem)
+                self.count -= 1
                 self.rearrange()
                 return
             
@@ -44,6 +55,7 @@ class SeparateChaining:
                 node.value = value
                 return
         self.hashtable[index].append(Node(key, value))
+        self.count += 1
         self.rearrange()
         
     """
@@ -77,11 +89,7 @@ class SeparateChaining:
         self.hashtable[h].append(n)
 
     def alpha(self): 
-        n = 0
-        m = self.size
-        for a in self.hashtable:
-            n += len(a)
-        return n/m
+        return self.count / self.size
     
     def get (self, key: str) -> int:
         index = string_to_hash(key) % self.size
