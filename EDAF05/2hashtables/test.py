@@ -56,32 +56,7 @@ class SeparateChaining:
                 return
         self.hashtable[index].append(Node(key, value))
         self.count += 1
-        self.rearrange()
-        
-    """
-    def remove(self, key: str):
-        h = string_to_hash(key) % self.size
-        for elem in self.hashtable[h]:
-            if elem.key == key:
-                if elem.value > 1:
-                    elem.value -= 1
-                else:
-                    self.hashtable[h].remove(elem)
-                self.rearrange()
-                return
-
-        
-    def insert(self, key: str): 
-        h = string_to_hash(key) % self.size
-
-        for a in self.hashtable[h]:
-            if a.key == key:
-                a.value += 1
-                return
-        self.hashtable[h].append(Node(key, 1))
-        self.rearrange()
-    """
-    
+        self.rearrange()   
 
 
     def private_insert(self, n: Node) :
@@ -117,12 +92,3 @@ class SeparateChaining:
         for hink in oldtable:
             for elem in hink:
                 self.private_insert(elem)
-
-    # Vad är denna till?
-    def items(self):
-        for bucket in self.hashtable:
-            for node in bucket:
-                yield node.key, node.value
-            
-        
-
