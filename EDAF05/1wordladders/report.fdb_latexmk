@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1775045087.6765 "c:/Users/Kalle/haskell/Haskell/EDAF05/1wordladders/report.tex" "report.pdf" "report" 1775045088.94854 0
-  "c:/Users/Kalle/haskell/Haskell/EDAF05/1wordladders/report.tex" 1775045086 2728 1c929361ace389ecd8e892461b946e57 ""
+["pdflatex"] 1775111136.75386 "c:/Users/Kalle/haskell/Haskell/EDAF05/1wordladders/report.tex" "report.pdf" "report" 1775111138.01477 0
+  "c:/Users/Kalle/haskell/Haskell/EDAF05/1wordladders/report.tex" 1775111135 2886 f3eac77125071c4b4f1e3c1f27da2bda ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1726647535 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1726655215 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1726654037 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -127,8 +127,8 @@
   "c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1726662797 5543950 2aa73a438b7054b2327b796fbe5f4275 ""
   "c:/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1726662933 3326051 f6e1c0127beae3aa2a0e78878e558c29 ""
   "c:/texlive/2024/texmf.cnf" 1726662772 713 e69b156964470283e0530f5060668171 ""
-  "report.aux" 1775045088 935 06cd9f19d7c310b851307629640a87ab "pdflatex"
-  "report.tex" 1775045086 2728 1c929361ace389ecd8e892461b946e57 ""
+  "report.aux" 1775111137 934 05c6c1a5e49c181af5f4c4265439a069 "pdflatex"
+  "report.tex" 1775111135 2886 f3eac77125071c4b4f1e3c1f27da2bda ""
   (generated)
   "report.aux"
   "report.log"
