@@ -21,30 +21,44 @@ def createGraph(indata: list):
 
 graph = createGraph(indata)
 
-Q = set(graph)
-print((n,m))
-print(graph)
-print(graph[1])
-print(Q)
+#def djikstrand(graph: dict, start:int):
+#    d ={start:0}
+#    pred = {start:start}
+#    Q = set(graph)
+#    Q.remove(start)
+#    total = 0
+#
+#    S = set()   
+#    S.add(start)
+#
+#    while Q:
+#       u, v, dist = min(((a, b, d[a] + w) for a in S for (b,w) in graph[a] if b in Q), key=lambda x: x[2])
+#       d[v] = dist
+#       pred[v] = u
+#
+#       Q.remove(v)
+#       S.add(v)
+#    return d[n]
 
-def djikstrand(graph: list, start:int):
-    d ={start:0}
-    pred = {start:start}
+def pims(graph: dict, start:int):
     Q = set(graph)
     Q.remove(start)
 
     S = set()   
     S.add(start)
 
+    total = 0
+
     while Q:
-       u, v, dist = min(((a, b, d[a] + w) for a in S for (b,w) in graph[a] if b in Q), key=lambda x: x[2])
-       d[v] = dist
-       pred[v] = u
+       u, v, w = min(((a, b, w) for a in S for (b,w) in graph[a] if b in Q), key=lambda x: x[2])
+       total += w
        Q.remove(v)
        S.add(v)
-    return d
+    return total
 
-print (djikstrand(graph, 1))
+print (pims(graph, 1))
+
+
 
 
 
