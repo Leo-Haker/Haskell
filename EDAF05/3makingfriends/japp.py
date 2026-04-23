@@ -1,4 +1,5 @@
 
+import heapq
 
 indata = []
 
@@ -21,26 +22,35 @@ def createGraph(indata: list):
 
 graph = createGraph(indata)
 
-#def djikstrand(graph: dict, start:int):
-#    d ={start:0}
-#    pred = {start:start}
-#    Q = set(graph)
-#    Q.remove(start)
-#    total = 0
-#
-#    S = set()   
-#    S.add(start)
-#
-#    while Q:
-#       u, v, dist = min(((a, b, d[a] + w) for a in S for (b,w) in graph[a] if b in Q), key=lambda x: x[2])
-#       d[v] = dist
-#       pred[v] = u
-#
-#       Q.remove(v)
-#       S.add(v)
-#    return d[n]
 
-def pims(graph: dict, start:int):
+
+def jarnik(graph: dict, root: int) -> int :
+    T = set()
+    T.add(root)
+    heap = [(w, root, v) for (v,w) in graph[root]]
+    heapq.heapify(heap)
+
+    total = 0
+
+    while heap:
+       w, u, v  = heapq.heappop(heap)
+
+       if v in T:
+           continue
+       
+       T.add(v)
+       total += w
+       for neighbor, weight in graph[v]:
+           if neighbor not in T:
+               item = (weight, v, neighbor)
+               heapq.heappush(heap, item)
+    
+    return total
+
+print(jarnik(graph, 1))
+
+
+def prims(graph: dict, start:int):
     Q = set(graph)
     Q.remove(start)
 
@@ -56,7 +66,7 @@ def pims(graph: dict, start:int):
        S.add(v)
     return total
 
-print (pims(graph, 1))
+
 
 
 
