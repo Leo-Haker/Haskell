@@ -27,7 +27,7 @@ print(graph)
 print(graph[1])
 print(Q)
 
-def djikstrand(graph: list, start:int) -> int:
+def djikstrand(graph: list, start:int):
     d ={start:0}
     pred = {start:start}
     Q = set(graph)
