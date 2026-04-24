@@ -50,6 +50,8 @@ def jarnik(graph: dict, root: int) -> int :
 print(jarnik(graph, 1))
 
 
+
+
 def prims(graph: dict, start:int):
     Q = set(graph)
     Q.remove(start)
