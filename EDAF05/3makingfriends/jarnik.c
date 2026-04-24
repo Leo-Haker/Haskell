@@ -1,12 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+kruskal_CSR.c 10 körningar:
+real    0m 35.599s
+user    0m 23.165s
+sys     0m 3.518s
+
+kruskal_v2.c 10 körningar:
+real    0m 42.634s
+user    0m 5.448s
+sys     0m 3.469s
+
+jarnik.c 10 körningar:
+real    0m 53.785s
+user    0m 23.765s
+sys     0m 3.923s
+
+pypy jarnik.py 10 körningar:
+real    6m 43.237s
+user    5m 54.661s
+sys     0m 20.619s
+
+
+
+*/
+
 
 typedef struct {
     int w, u, v
 } Edge;
 
-Edge* heap;;
+Edge* heap;
 int heap_size = 0;
 
 void swap(int i, int j) {
