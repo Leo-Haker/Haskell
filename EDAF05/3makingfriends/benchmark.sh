@@ -1,9 +1,13 @@
 # Nedan eller
 echo "=== PyPy ==="
-time for i in $(seq 1 10); do ./check_solution.sh pypy3 jarnik.py > /dev/null 2>&1; echo "Run $i done" done
+time for i in $(seq 1 10); do ./check_solution.sh pypy3 jarnik.py > /dev/null 2>&1; echo "Run $i done"; done
 
 echo "=== C ==="
 time for i in $(seq 1 10); do ./check_solution.sh ./jarnik > /dev/null 2>&1; echo "Run $i done"; done
+
+echo "=== C ==="
+time for i in $(seq 1 10); do ./check_solution.sh ./kruskal > /dev/null 2>&1; echo "Run $i done"; done
+
 
 
 RUNS=100

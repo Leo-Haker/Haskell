@@ -47,7 +47,36 @@ def jarnik(graph: dict, root: int) -> int :
     
     return total
 
-print(jarnik(graph, 1))
+
+def jarnik_new(graph, root, n):
+    visited = [False] * (n + 1)
+    visited[root] = True
+
+    heap = [(w, v) for (v, w) in graph[root]]
+    heapq.heapify(heap)
+
+    total = 0
+
+    heappop = heapq.heappop
+    heappush = heapq.heappush
+    g = graph
+
+    while heap:
+        w, v = heappop(heap)
+
+        if not visited[v]:
+            continue
+
+        visited[v] = True
+        total += w
+ 
+        for neighbor, weight in g[v]:
+            if not visited[neighbor]:
+                heappush(heap, (weight, neighbor))
+
+    return total
+
+print(jarnik_new(graph, 1,n))
 
 
 
