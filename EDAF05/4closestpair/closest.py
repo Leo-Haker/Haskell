@@ -53,7 +53,7 @@ def closest(px: List[tuple], py: List[tuple], n:int ) -> float:
 def strip(ps: List[tuple], delta: float) -> float:
     size = len(ps)
     res = float('inf')
-    #ändrade från i+8 till i+3 som funkade men i+2 funkade inte
+    #ändrade från i+8 till i+3 som funkade men i+2 funkade inte gick snabbare också
     for i in range(size):
         for j in range(i+1, min(i+3, size)):
             res = min(distance(ps[i], ps[j]), res)
@@ -82,10 +82,27 @@ def main():
 
     result = closest_pair(theplane)
 
+    #result = bruteforce(theplane)
+
     end = time.perf_counter()
 
     print(f"{result:.6f}")
     print(f"Time: {(end - start)*1000:.3f} ms", file=sys.stderr)    #.6f means fixed-point float exakt 6 digits va
+
+
+
+
+def bruteforce(punkter: List[tuple[float,float]]) -> float:
+    dist = float('inf')
+
+    for i in range(len(punkter)):
+        for j in range(len(punkter)):
+            if i > j:
+                avstånd = distance(punkter[i], punkter[j])
+                if avstånd < dist:
+                    dist = avstånd
+            
+    return dist
 
 if __name__ == "__main__":
     main()
