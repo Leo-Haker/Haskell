@@ -44,6 +44,9 @@ def subproblem(px: List[tuple], py: List[tuple]) -> float:
 def subproblem_1(px: List[tuple], py: List[tuple], size:int) -> float:
     delta = float('inf')
     for i in size:
-         
+     for j in size:
+         d = distance(px[i], py[j])
+         if d < delta:
+             
 
 
