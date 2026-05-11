@@ -1,6 +1,7 @@
 import sys
 from typing import List
 import math
+import time
 
 data = sys.stdin.buffer.read().split()
 
@@ -30,7 +31,13 @@ def closest(px: List[tuple], py: List[tuple], n:int ) -> float:
     #viktigt checka om ett element finns i ett sett är O(1) innan hade jag O(n) så tog väldigt långt tid att bygga left/right_py
     left_set = set(left_px)
 
-    (left_py, right_py) = ([p for p in py if p in left_set], [p for p in py if p not in left_set])
+    (left_py, right_py) = ([],[])
+
+    for p in py:
+        if p in left_set:
+            left_py.append(p)
+        else:
+            right_py.append(p)
 
     delta_left = closest(left_px, left_py, len(left_px))
     delta_right = closest(right_px, right_py, len(right_px))
@@ -46,9 +53,9 @@ def closest(px: List[tuple], py: List[tuple], n:int ) -> float:
 def strip(ps: List[tuple], delta: float) -> float:
     size = len(ps)
     res = float('inf')
-
+    #ändrade från i+8 till i+3 som funkade men i+2 funkade inte
     for i in range(size):
-        for j in range(i+1, min(i+10, size)):
+        for j in range(i+1, min(i+3, size)):
             res = min(distance(ps[i], ps[j]), res)
     return res
 
@@ -71,8 +78,14 @@ def distance(p1: tuple[float,float], p2: tuple[float,float]) -> float :
 
 
 def main():
-    #.6f means fixed-point float exakt 6 digits va
-    print(f"{closest_pair(theplane):.6f}")
+    start = time.perf_counter()
+
+    result = closest_pair(theplane)
+
+    end = time.perf_counter()
+
+    print(f"{result:.6f}")
+    print(f"Time: {(end - start)*1000:.3f} ms", file=sys.stderr)    #.6f means fixed-point float exakt 6 digits va
 
 if __name__ == "__main__":
     main()
