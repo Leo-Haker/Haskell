@@ -10,10 +10,9 @@ idx = 0
 n = int(data[idx]); idx += 1
 
 theplane = []
-for _ in range(n):
-    theplane.append((float(data[idx]), float(data[idx+1])))
-    idx += 2
-
+f = float
+theplane = [(f(data[i]), f(data[i+1]))
+            for i in range(idx, idx + 2*n, 2)]
 
 def closest_pair(plane: List[tuple]) -> float: 
     p_x = sorted(plane, key=lambda t: t[0])
@@ -33,8 +32,10 @@ def closest(px: List[tuple], py: List[tuple], n:int ) -> float:
 
     (left_py, right_py) = ([],[])
 
+    finns = left_set.__contains__
+
     for p in py:
-        if p in left_set:
+        if finns(p):
             left_py.append(p)
         else:
             right_py.append(p)
@@ -51,11 +52,10 @@ def closest(px: List[tuple], py: List[tuple], n:int ) -> float:
     return min(delta, strip(ps, delta))
 
 def strip(ps: List[tuple], delta: float) -> float:
-    size = len(ps)
     res = float('inf')
     #ändrade från i+8 till i+3 som funkade men i+2 funkade inte gick snabbare också
-    for i in range(size):
-        for j in range(i+1, min(i+3, size)):
+    for i in range(len(ps)):
+        for j in range(i+1, min(i+3, len(ps))):
             res = min(distance(ps[i], ps[j]), res)
     return res
 
@@ -82,27 +82,13 @@ def main():
 
     result = closest_pair(theplane)
 
-    #result = bruteforce(theplane)
+    #result = brute(theplane)
 
     end = time.perf_counter()
 
     print(f"{result:.6f}")
     print(f"Time: {(end - start)*1000:.3f} ms", file=sys.stderr)    #.6f means fixed-point float exakt 6 digits va
 
-
-
-
-def bruteforce(punkter: List[tuple[float,float]]) -> float:
-    dist = float('inf')
-
-    for i in range(len(punkter)):
-        for j in range(len(punkter)):
-            if i > j:
-                avstånd = distance(punkter[i], punkter[j])
-                if avstånd < dist:
-                    dist = avstånd
-            
-    return dist
 
 if __name__ == "__main__":
     main()
