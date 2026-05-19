@@ -75,14 +75,14 @@ def doing_stuff(cost_pair: List, characters: str, query: tuple[str, str]) -> str
 
     for i in range(1, m+1):
         dp[i][0][0] = i*-4
-        dp[i][0][1][0] = "*"
         dp[i][0][1][1] = "*"
+        dp[i][0][1][0] = s1[0]
 
 
     for j in range(1, n+1):
         dp[0][j][0] = j*-4
         dp[0][j][1][0] = "*"
-        dp[0][j][1][1] = "*"
+        dp[0][j][1][1] = s2[0]
 
     for i in range (1, m+1):
         for j in range(1, n+1):
@@ -97,9 +97,13 @@ def doing_stuff(cost_pair: List, characters: str, query: tuple[str, str]) -> str
             if best == diag:
                 dp[i][j][1][0] = dp[i-1][j-1][1][0] + s1[i-1]
                 dp[i][j][1][1] = dp[i-1][j-1][1][1] + s2[j-1]
-            #elif best == up:
-                #dp[i-1][j][1][0] = dp[i-1][j][1][0] + s1[i-1]
-            #elif best == left:
+            elif best == up:
+                dp[i][j][1][0] = dp[i-1][j][1][0] + "*"
+                dp[i][j][1][1] = dp[i-1][j][1][1] + s2[j-1]
+            elif best == left:
+                dp[i][j][1][0] = dp[i][j-1][1][0] + s1[i-1]
+                dp[i][j][1][1] = dp[i][j-1][1][1] + "*"
+                
 
 
 
@@ -108,4 +112,3 @@ def doing_stuff(cost_pair: List, characters: str, query: tuple[str, str]) -> str
 for p in list_queries:
     print(doing_stuff(cost_pair, characters, p))
 
-    
