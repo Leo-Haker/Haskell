@@ -73,40 +73,37 @@ def doing_stuff(cost_pair: List, characters: str, query: tuple[str, str]) -> str
     ]
 
 
-    for i in range(m+1):
+    for i in range(1, m+1):
         dp[i][0][0] = i*-4
         dp[i][0][1][0] = "*"
         dp[i][0][1][1] = "*"
 
 
-    for j in range(n+1):
+    for j in range(1, n+1):
         dp[0][j][0] = j*-4
         dp[0][j][1][0] = "*"
         dp[0][j][1][1] = "*"
 
     for i in range (1, m+1):
         for j in range(1, n+1):
-            diag = dp[i-1][j-1][0]+ cost_pair[charindex[s1[i-1]]][charindex[s2[j-1]]]
+            diag = dp[i-1][j-1][0] + cost_pair[charindex[s1[i-1]]][charindex[s2[j-1]]]
             up   = dp[i-1][j][0] - 4
             left = dp[i][j-1][0] - 4
 
-            best = max(diag,up,left)
+            best = max(diag,left,up)
 
             dp[i][j][0] = best
 
             if best == diag:
                 dp[i][j][1][0] = dp[i-1][j-1][1][0] + s1[i-1]
                 dp[i][j][1][1] = dp[i-1][j-1][1][1] + s2[j-1]
+            #elif best == up:
+                #dp[i-1][j][1][0] = dp[i-1][j][1][0] + s1[i-1]
+            #elif best == left:
 
-            elif best == up:
-                dp[i-1][j][1][0] = dp[i-1][j][1][0] + s1[i-1]
-                dp[i-1][j][1][1] = dp[i-1][j][1][1] + s2[j]
 
-            elif best == left:
-                dp[i][j-1][1][0] = dp[i][j-1][1][0] + s1[i]
-                dp[i][j-1][1][1] = dp[i][j-1][1][1] + s2[j-1]
 
-    return dp[m][n][1][0] + "   " + dp[m][n][1][1]
+    return dp[m][n][1][0] + " " + dp[m][n][1][1]
 
 for p in list_queries:
     print(doing_stuff(cost_pair, characters, p))
