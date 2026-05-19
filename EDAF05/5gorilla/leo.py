@@ -1,0 +1,78 @@
+import sys
+from typing import List
+
+characters = sys.stdin.buffer.readline().decode().strip().replace(" ", "")
+
+data = sys.stdin.buffer.read().split()
+
+
+cost_pair = []
+idx = 0
+length  = len(characters)
+
+for n in range(length):
+    row = [int(p) for p in data[idx: idx + length]]
+    idx += length
+    cost_pair.append(row)
+
+number_queries = int(data[idx]); idx += 1
+
+list_queries = []
+
+for n in range(number_queries):
+    list_queries.append((data[idx].decode(), data[idx+1].decode()))
+    idx += 2
+
+
+def doing_stuff_after_3large(cost_pair: List, characters: str, query: tuple[str, str]) -> str:
+    charindex = {c: i for i, c in enumerate(characters)}
+    res1 = ""
+    res2 = ""
+    s1 = query[0]
+    s2 = query[1]
+    m = len(s1)
+    n = len(s2)
+
+    dp = [[0] * (n+1) for _ in range(m+1)]
+
+
+    for i in range(1, m+1):
+        dp[i][0] = i*-4
+
+
+    for j in range(1, n+1):
+        dp[0][j] = j*-4
+
+    for i in range (1, m+1):
+        for j in range(1, n+1):
+            diag = dp[i-1][j-1] + cost_pair[charindex[s1[i-1]]][charindex[s2[j-1]]]
+            up   = dp[i-1][j] - 4
+            left = dp[i][j-1] - 4
+            dp[i][j] = max(diag,left,up)
+                
+    i, j = m, n
+    
+    while i > 0 or j > 0:
+        if i > 0 and j > 0:
+            diag = dp[i-1][j-1] + cost_pair[charindex[s1[i-1]]][charindex[s2[j-1]]]
+        else:
+            diag = float('-inf')
+
+
+        if dp[i][j] == diag:
+            res1 = s1[i-1] + res1
+            res2 = s2[j-1] + res2
+            i -= 1; j -= 1
+        elif dp[i][j] == dp[i-1][j] - 4:
+            res1 = s1[i-1] + res1
+            res2 = "*" + res2
+            i -= 1
+        else:
+            res1 = "*" + res1
+            res2 = s2[j-1] + res2
+            j -= 1
+    return res1 + " " + res2
+
+for p in list_queries:
+    print(doing_stuff_after_3large(cost_pair, characters, p))
+    
