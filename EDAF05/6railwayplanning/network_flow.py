@@ -1,3 +1,4 @@
+from collections import deque
 import sys
 
 
@@ -23,3 +24,24 @@ for i in range(M_edges):
 for i in range(P_routes):
     p = data[idx];idx += 1
     remove_route.append(p)
+
+
+## enkel schematisk grund
+def BFS (G,s,t):
+    queue = deque()
+    queue.append(s)
+    visited = bytearray(len(G))
+    visited[s] = 1
+
+    while queue:
+        v = queue.popleft()
+
+        for w in neighbor(v):
+            if not visited(w):
+                visited(w) = 1 
+                queue.add(w)
+                if w == t:
+                    print("found path s-t")
+                    return
+    return
+                
