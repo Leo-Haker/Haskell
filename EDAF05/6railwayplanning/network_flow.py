@@ -47,3 +47,7 @@ def BFS (G:dict ,s,t, parent:list):
                     return True
     return False
                 
+def Ford_Fullkerson():
+    while BFS:
+        "do stuff"
+    return
