@@ -29,7 +29,7 @@ for i in range(P_routes):
 
 
 ## enkel schematisk grund
-def BFS (G:dict ,s,t, parent:list):
+def BFS (G:list[list] ,s,t, parent:list):
     queue = deque()
     queue.append(s)
     visited = bytearray(N_nodes)
@@ -46,8 +46,17 @@ def BFS (G:dict ,s,t, parent:list):
                 if v == t:
                     return True
     return False
+
+def Residual_Graph(Graph:list[list]) -> list[list]:
+    rg = [[0] * N_nodes in range(N_nodes)]
+    for i in range(N_nodes):
+        for j in range(N_nodes):
+            if Graph[i][j] == 0: rg[i][j] = 0
+            else:
+                rg[i][j] = forward_edge() - Graph[i][j]
+    return rg
                 
-def Ford_Fullkerson():
+def Ford_Fulkerson():
     while BFS:
         "do stuff"
     return
