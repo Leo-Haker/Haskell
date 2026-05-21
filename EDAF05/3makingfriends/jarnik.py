@@ -1,6 +1,35 @@
 
 import heapq
 import sys
+"""
+1. Varför prducerar algoritmen ett MST?
+Kör i princip Dijkstras.
+Börjar på en nod och expanderar greedily.
+Vår priority-head ger oss snabbt den billigaste kanten
+visited gör att vi inte skapar en cykel
+
+2. Tidskomplexitet 
+Best Case: O(E*log(V)) - grafen är redan MST
+Average: O((V + E) * log(V)) 
+    Varje nod besöks exakt en gång och loopar alla 
+    sina grannar. 
+    heappop körs V gånger -> V*log(V) 
+    heappush körs E gånger -> E*log(V)
+Worst Case: O(V^2 * log(V))- när E = V. Lång path.  
+
+3. Vad händer när en kant kollapsar?
+Kan splittra grafen, och därmed inte nå överallt. 
+MST:n gäller inte längre, behöver räkna om. 
+
+4. Verkliga tillämpningar
+Olika typer av nätverk.
+Kunna reducera nätverk, ta bort dyra kanter. 
+
+5. Krav för att MST ge rätt lösning: 
+Alla noder är anslutna, kanterna har kostnad, 
+tar inte hänsyn till riktning, flöde eller redundans.
+
+"""
 
 data = sys.stdin.buffer.read().split()
 idx = 0
