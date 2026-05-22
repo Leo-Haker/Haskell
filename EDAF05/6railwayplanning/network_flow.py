@@ -8,33 +8,59 @@ def Railway_Planning():
 
     routes_removed = 0
     capacity = 0
-    old_capacity = 0
-    i = 1
+    fast_reset_rg()
+    f = Ford_Fulkerson()
+    lower = 0
+    higher = len(remove_route)
+
+    while lower < higher:
+        reset_graph()
+        mid = (lower + higher + 1)//2
+        remove_path_binary(mid)
+        fast_reset_rg()
+        reset_flow()
+        capacity = Ford_Fulkerson()
+        
+        if capacity >= C_students:
+            lower = mid
+            f = capacity
+        else:
+            higher = mid -1
+            f = capacity
+
+        #print(f"mid={mid}, capacity={capacity}, lower={lower}, higher={higher}")
+    reset_graph()
+    #print(graph)
+    remove_path_binary(lower)
+    #print(graph)
+    fast_reset_rg()
+    #print(residual_graph)
+    reset_flow()
+    #print(flow)
+    f = Ford_Fulkerson()
+    routes_removed = lower
+    print(str(routes_removed) + "  " + str(f))
     #
 # Om svaret på problemet är x, så betyder det att man får flow >= C när man tar bort de x första kanterna, 
 # men flow < C när man tar bort de x+1 första kanterna (Optimering?)
-    for r in remove_route:
-        print("Iteration " + str(i))
+""" for r in remove_route:
         (u ,v , c) = edges[r]
-        print("u,v,c : " + str((u,v,c)) + "\n")
-        print("flow before: " + str(flow) + "\n")
         graph[u][v] = 0
-        print("rg before reset: " + str(residual_graph) + "\n")
+        graph[v][u] = 0
         fast_reset_rg()
-        print("rg after reset: " + str(residual_graph) + "\n")
         reset_flow()
-        print("flow after reset: " + str(flow) + "\n")
         capacity = Ford_Fulkerson()
-        print("flow after FF: " + str(flow) + "\n")
         if capacity < C_students:
             graph[u][v] = c
+            graph[v][u] = c
+            break
         else: 
             routes_removed += 1
-            old_capacity = capacity
-        i += 1
-        print("\n \n")
+            f = capacity
     
-    print(str(routes_removed) + "  " + str(old_capacity))
+    print(str(routes_removed) + "  " + str(f))
+"""
+
 
 
 # Kontrollerar nätverksflöde
@@ -46,13 +72,11 @@ def Ford_Fulkerson():
     total_flow = []
     path = get_path(parent, s, t)
 
-    while path : 
-        print("path: " + str(path) + "\n")
+    while path and i < 4000: 
         for p in range(len(path)): 
             u = path[p][0]
             v = path[p][1]
             delta = min(residual_graph[u][v], delta)
-            print("delta: " + str(delta) + "\n")
         
         for p in range(len(path)):
             u = path[p][0]
@@ -61,15 +85,10 @@ def Ford_Fulkerson():
 
         total_flow.append(delta)
         delta = float("inf")
-        print("rg i FF före update: " + str(residual_graph) + "\n")
         Update_Residual_Graph(residual_graph)
-        print("rg i  FF efter update: " + str(residual_graph) + "\n")
         parent = BFS(residual_graph,s, t)
-        print("parent: " + str(parent) + "\n")
         path = get_path(parent, s, t)
-        print("path :" + str(path) + "\n")
 
-    print("total_sum: " + str(total_flow) + "\n")
     return sum(total_flow)
 
 

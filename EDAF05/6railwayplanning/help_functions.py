@@ -7,9 +7,10 @@ def get_capacity(u, v) -> int:
 def get_flow(u, v) -> int:
     return flow[u][v]
 
-def update_flow(u,v, c):
+def update_flow(u,v, delta):
     global flow
-    flow[u][v] = c
+    flow[u][v] += delta
+    flow[v][u] -= delta
 
 def reset_flow():
     for i in range(N_nodes):
@@ -33,19 +34,26 @@ def get_path(parent, s, t):
     return path
 
 def Update_Residual_Graph(rg:list[list] ) -> list[list]:
-    print("kapacitet 0 1:" + str(get_capacity(0,1)) + "\n")
-    print("kapacitet 0 2:" + str(get_capacity(0,2)) + "\n")
-    print("flow 0 2:" + str(get_flow(0,2)) + "\n")
-    print("flow 0 1:" + str(get_flow(0,1)) + "\n")
     for u in range(N_nodes):
         for v in range(N_nodes):
+            
             a = get_capacity(u,v)
             b = get_flow(u,v)
             if a == 0 and b == 0:
                 continue
-            if a > b:
-                 rg[u][v]= a - b
-                 rg[v][u] = b
-            elif a == b:
-                rg[u][v] = 0
-                rg[v][u] = b
+            rg[u][v] = max(0, a-b)
+
+def remove_path_binary(mid):
+    for r in remove_route[:mid]:
+        (u,v,c) = edges[r]
+        graph[u][v] = 0
+        graph[v][u] = 0
+
+def reset_graph():
+    new = deepcopy(original_graph)
+    for i in range(N_nodes):
+        graph[i][:] = new[i][:]
+
+
+
+

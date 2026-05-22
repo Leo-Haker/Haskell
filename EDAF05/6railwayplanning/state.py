@@ -23,9 +23,12 @@ for i in range(M_edges):
     v = data[idx]; idx += 1
     c = data[idx]; idx += 1
     graph[u][v] = c
+    graph[v][u] = c
     edges.append((u,v,c))
 
 for i in range(P_routes):
     p = data[idx];idx += 1
     remove_route.append(p)
+
+original_graph = deepcopy(graph)
 
