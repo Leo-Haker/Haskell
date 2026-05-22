@@ -10,7 +10,9 @@ def Railway_Planning():
     capacity = 0
     old_capacity = 0
     i = 1
-
+    #
+# Om svaret på problemet är x, så betyder det att man får flow >= C när man tar bort de x första kanterna, 
+# men flow < C när man tar bort de x+1 första kanterna (Optimering?)
     for r in remove_route:
         print("Iteration " + str(i))
         (u ,v , c) = edges[r]
