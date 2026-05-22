@@ -13,7 +13,6 @@ P_routes = data[idx]; idx += 1
 
 # Skapar strukturer
 graph = [[0] * N_nodes for _ in range(N_nodes)]
-original_graph = []
 flow = deepcopy(graph)
 residual_graph = deepcopy(graph)
 edges= []
@@ -29,6 +28,4 @@ for i in range(M_edges):
 for i in range(P_routes):
     p = data[idx];idx += 1
     remove_route.append(p)
-
-original_graph = deepcopy(graph)
 
