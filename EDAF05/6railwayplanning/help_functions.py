@@ -27,10 +27,12 @@ def get_path(parent, s, t):
     
     path = []
     node = t
-
+    
     while node != s:
-        path.append((parent[node], node))
-        node = parent[node]
+        edge_idx = parent[node]
+        (u, v, c, f, b, r) = edge_list[edge_idx]
+        path.append(edge_idx)
+        node = u
     return path
 
 def Update_Residual_Graph(rg:list[list] ) -> list[list]:

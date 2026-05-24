@@ -67,21 +67,20 @@ def Railway_Planning():
 def Ford_Fulkerson():
     s = 0
     t = N_nodes - 1
-    parent = BFS(residual_graph,s, t)
+    parent = BFS(s, t)
     delta = float("inf")
     total_flow = []
     path = get_path(parent, s, t)
 
-    while path and i < 4000: 
+    while path: 
         for p in range(len(path)): 
-            u = path[p][0]
-            v = path[p][1]
-            delta = min(residual_graph[u][v], delta)
+            edge_idx = path[p]
+            (u,v,c,f,b) = edge_list[edge_idx]
+            delta = min(c-f, delta)
         
         for p in range(len(path)):
-            u = path[p][0]
-            v = path[p][1]
-            update_flow(u,v, delta)
+            edge_idx = path[p]
+            edge_list[edge_idx][3] = delta
 
         total_flow.append(delta)
         delta = float("inf")
@@ -106,7 +105,7 @@ def BFS (s,t):
         u = queue.popleft()
 
         for edge_idx in adj[u]:
-            (eu,v,c,f,b) = edge_list[edge_idx]
+            (eu,v,c,f,b,r) = edge_list[edge_idx]
             cap = c - f
 
             if not visited[v] and cap > 0:

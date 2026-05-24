@@ -17,10 +17,12 @@ edge_list = [] #[(u, v, c, flow, activated)]
 adj = [[] for _ in range(N_nodes)]
 
 def add_edge(u, v, c):
+    fwd = len(edge_list)
+    bwd = fwd + 1
     adj[u].append(len(edge_list))
-    edge_list.append([u, v, c, 0, True])
+    edge_list.append([u, v, c, 0, True, fwd])
     adj[v].append(len(edge_list))
-    edge_list.append([v, u, c, 0, True])
+    edge_list.append([v, u, c, 0, True, bwd])
 
 for i in range(M_edges):
     u = data[idx]; idx += 1
