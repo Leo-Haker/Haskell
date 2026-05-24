@@ -95,7 +95,7 @@ def Ford_Fulkerson():
 
 
 # BFS för att se att det går att ta sig från start till slut
-def BFS (g:list[list] ,s,t):
+def BFS (s,t):
     queue = deque()
     queue.append(s)
     visited = bytearray(N_nodes)
@@ -105,13 +105,18 @@ def BFS (g:list[list] ,s,t):
     while queue:
         u = queue.popleft()
 
-        for v in range(len(g)):
-            if not visited[v] and g[u][v] > 0:
+        for edge_idx in adj[u]:
+            (eu,v,c,f,b) = edge_list[edge_idx]
+            cap = c - f
+
+            if not visited[v] and cap > 0:
+                visited[v] = 1
                 visited[v] = 1 
                 queue.append(v)
-                parent[v] = u
+                parent[v] = edge_idx
                 if v == t:
                     return parent
+
     return []
 
 
