@@ -25,10 +25,8 @@ def Railway_Planning():
         capacity = Ford_Fulkerson()
         if capacity >= C_students:
             lower = mid
-            f = capacity
         else:
             higher = mid -1
-            f = capacity
 
 
     reset()
