@@ -12,24 +12,23 @@ C_students = data[idx]; idx += 1
 P_routes = data[idx]; idx += 1
 
 # Skapar strukturer
+graph = [[0] * N_nodes for _ in range(N_nodes)]
+flow = deepcopy(graph)
+residual_graph = deepcopy(graph)
+edges= []
 remove_route = []
-edge_list = [] #[(u, v, c, flow, activated)]
-adj = [[] for _ in range(N_nodes)]
-
-def add_edge(u, v, c):
-    adj[u].append(len(edge_list))
-    edge_list.append([u, v, c, 0, True])
-    adj[v].append(len(edge_list))
-    edge_list.append([v, u, c, 0, True])
 
 for i in range(M_edges):
     u = data[idx]; idx += 1
     v = data[idx]; idx += 1
     c = data[idx]; idx += 1
-    add_edge(u, v, c)
+    graph[u][v] = c
+    graph[v][u] = c
+    edges.append((u,v,c))
 
 for i in range(P_routes):
     p = data[idx];idx += 1
     remove_route.append(p)
 
+original_graph = deepcopy(graph)
 
