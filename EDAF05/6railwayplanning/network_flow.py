@@ -2,6 +2,12 @@ from collections import deque
 from help_functions import *
 from state import *
 
+"""
+Paths = O(V * E) 
+BFS = (V + E) 
+FF = Path * BFS = O(V^2 * E + V * E^2) avrundas till O(V* E^2) när E >> V
+Railway_Planning = O(logR * V * E^2), där R är antalet rutter att ta bort
+"""
 
 #Ändrar tågkartan
 def Railway_Planning():
