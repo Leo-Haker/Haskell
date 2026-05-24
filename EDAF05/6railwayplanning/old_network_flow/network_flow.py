@@ -8,6 +8,8 @@ def Railway_Planning():
 
     routes_removed = 0
     capacity = 0
+    fast_reset_rg()
+    f = Ford_Fulkerson()
     lower = 0
     higher = len(remove_route)
 

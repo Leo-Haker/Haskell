@@ -1,4 +1,4 @@
-from state import  *
+from old_network_flow.state import  *
 from copy import copy, deepcopy
 
 def get_capacity(u, v) -> int:

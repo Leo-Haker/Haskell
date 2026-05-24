@@ -1,4 +1,4 @@
-from network_flow import Railway_Planning
+from old_network_flow.network_flow import Railway_Planning
 
 # Kör programmet
 def main():
