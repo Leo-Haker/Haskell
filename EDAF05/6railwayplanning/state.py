@@ -13,7 +13,7 @@ P_routes = data[idx]; idx += 1
 
 # Skapar strukturer
 remove_route = []
-edge_list = [] #[(u, v, c, flow, activated)]
+edge_list = [] #[(u, v, c, flow, activated, inverse edge index)]
 adj = [[] for _ in range(N_nodes)]
 
 def add_edge(u, v, c):

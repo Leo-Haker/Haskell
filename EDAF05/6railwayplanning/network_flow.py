@@ -8,17 +8,15 @@ def Railway_Planning():
 
     routes_removed = 0
     capacity = 0
-    fast_reset_rg()
     f = Ford_Fulkerson()
+    #print("first f : " + str(f) + "\n")
     lower = 0
     higher = len(remove_route)
 
     while lower < higher:
-        reset_graph()
+        reset()
         mid = (lower + higher + 1)//2
         remove_path_binary(mid)
-        fast_reset_rg()
-        reset_flow()
         capacity = Ford_Fulkerson()
         
         if capacity >= C_students:
@@ -29,42 +27,21 @@ def Railway_Planning():
             f = capacity
 
         #print(f"mid={mid}, capacity={capacity}, lower={lower}, higher={higher}")
-    reset_graph()
+    reset()
     #print(graph)
     remove_path_binary(lower)
-    #print(graph)
-    fast_reset_rg()
-    #print(residual_graph)
-    reset_flow()
     #print(flow)
     f = Ford_Fulkerson()
     routes_removed = lower
-    print(str(routes_removed) + "  " + str(f))
+    #print(str(routes_removed) + "  " + str(f))
     #
 # Om svaret på problemet är x, så betyder det att man får flow >= C när man tar bort de x första kanterna, 
 # men flow < C när man tar bort de x+1 första kanterna (Optimering?)
-""" for r in remove_route:
-        (u ,v , c) = edges[r]
-        graph[u][v] = 0
-        graph[v][u] = 0
-        fast_reset_rg()
-        reset_flow()
-        capacity = Ford_Fulkerson()
-        if capacity < C_students:
-            graph[u][v] = c
-            graph[v][u] = c
-            break
-        else: 
-            routes_removed += 1
-            f = capacity
-    
-    print(str(routes_removed) + "  " + str(f))
-"""
-
 
 
 # Kontrollerar nätverksflöde
 def Ford_Fulkerson():
+    global edge_list
     s = 0
     t = N_nodes - 1
     parent = BFS(s, t)
@@ -75,18 +52,31 @@ def Ford_Fulkerson():
     while path: 
         for p in range(len(path)): 
             edge_idx = path[p]
-            (u,v,c,f,b) = edge_list[edge_idx]
-            delta = min(c-f, delta)
+            (u,v,c,f,b,r) = edge_list[edge_idx]
+            flow = max(0, c-f)
+            print("flow :" + str(flow))
+            delta = min(delta, flow)
+            print("delta :" + str(delta))
+            #print("path : " + str(p) + "\n")
         
         for p in range(len(path)):
             edge_idx = path[p]
-            edge_list[edge_idx][3] = delta
+            print(delta)
+            other_way_idx = edge_list[edge_idx][5]
+            print(edge_list[edge_idx][3])
+            print(edge_list[other_way_idx][3])
+            state.edge_list[edge_idx][3] = edge_list[edge_idx][3] + delta
+            state.edge_list[other_way_idx][3] =  edge_list[other_way_idx][3] - delta
+            print(edge_list[edge_idx][3])
+            print(edge_list[other_way_idx][3])
 
         total_flow.append(delta)
         delta = float("inf")
-        Update_Residual_Graph(residual_graph)
-        parent = BFS(residual_graph,s, t)
+        parent = BFS(s, t)
+        print(parent)
         path = get_path(parent, s, t)
+        print(path)
+    
 
     return sum(total_flow)
 
@@ -100,21 +90,29 @@ def BFS (s,t):
     visited = bytearray(N_nodes)
     visited[s] = 1
     parent = [-1] * N_nodes
+    #print(parent)
 
     while queue:
         u = queue.popleft()
 
         for edge_idx in adj[u]:
-            (eu,v,c,f,b,r) = edge_list[edge_idx]
-            cap = c - f
+            active = edge_list[edge_idx][4]
+            #print(adj)
+            #print(active)
+            if active:
+                (eu,v,c,f,b,r) = edge_list[edge_idx]
+                cap = c - f
 
-            if not visited[v] and cap > 0:
-                visited[v] = 1
-                visited[v] = 1 
-                queue.append(v)
-                parent[v] = edge_idx
-                if v == t:
-                    return parent
+                if not visited[v] and cap > 0:
+                    #print(v)
+                    #print(edge_idx)
+                    visited[v] = 1 
+                    queue.append(v)
+                    parent[v] = edge_idx
+                    if v == t:
+                        #print("parent return in while loop: " + str(parent) + "\n")
+                        return parent
+    #print("parent efter while loop: " + str(parent) + "\n")
 
     return []
 
