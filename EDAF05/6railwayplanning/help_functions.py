@@ -17,7 +17,7 @@ def get_path(parent, s, t):
     
     while node != s:
         edge_idx = parent[node]
-        (u, v, c, f, b, r) = edge_list[edge_idx]
+        u = edge_list[edge_idx][0]
         path.append(edge_idx)
         node = u
     return path
