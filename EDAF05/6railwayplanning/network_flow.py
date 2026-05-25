@@ -7,6 +7,17 @@ Paths = O(V * E)
 BFS = (V + E) 
 FF = Path * BFS = O(V^2 * E + V * E^2) avrundas till O(V* E^2) när E >> V
 Railway_Planning = O(logR * V * E^2), där R är antalet rutter att ta bort
+
+Max-Flow Min_Cut teoremet
+A = alla noder som BFS kan nå från s
+B = all andra noder (inklusive t)
+
+Detta leder till att kanter A -> B är mättade, kapaciteten på dessa kanter = flödet vi beräknat
+Max flow = min cut kapacitet
+
+Inget flöde kan vara större än något snitt → max flow ≤ min cut
+Vi hittade ett snitt = vårt flöde → max flow ≥ min cut
+Alltså: max flow == min cut
 """
 
 #Ändrar tågkartan
@@ -50,15 +61,13 @@ def Ford_Fulkerson():
     path = get_path(parent, s, t)
 
     while path: 
-        for p in range(len(path)): 
-            edge_idx = path[p]
+        for edge_idx in path: 
             c = edge_list[edge_idx][2]
             f = edge_list[edge_idx][3]
             flow = max(0, c-f)
             delta = min(delta, flow)
         
-        for p in range(len(path)):
-            edge_idx = path[p]
+        for edge_idx in path:
             other_way_idx = edge_list[edge_idx][5]
             edge_list[edge_idx][3] += delta
             edge_list[other_way_idx][3] -= delta
